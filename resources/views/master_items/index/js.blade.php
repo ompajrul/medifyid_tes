@@ -20,6 +20,7 @@
         getData()
     })
 
+   
     function getData(){
         
         $('#loading-filter').show();
@@ -35,26 +36,64 @@
             dataType: 'json',
             tryCount: 0,
             retryLimit: 3,
-            data: 'kode=' + filter_kode + '&nama=' + filter_nama + '&hargamin=' + filter_harga_min + '&hargamax=' + filter_harga_max,
+            // data: 'kode=' + filter_kode + '&nama=' + filter_nama + '&hargamin=' + filter_harga_min + '&hargamax=' + filter_harga_max,
+            data:{
+                kode:filter_kode,
+                nama: filter_nama,
+                hargamin:filter_harga_min,
+                hargamax:filter_harga_max
+            },
             success: function(results) {
                 var data = results.data
 
                 $.each(data, function(index, item) {
-                    array_temp = [];
-                    var harga_jual = item.harga_beli + item.harga_beli * item.laba / 100;
-                    harga_jual = Math.round(harga_jual)
-                    var kode = item.kode;
+                    // array_temp = [];
+                    // var harga_jual = item.harga_beli + item.harga_beli * item.laba / 100;
+                    // harga_jual = Math.round(harga_jual)
+                    // // array_temp.push(htmlFoto);
+                    // var kode = item.kode;
 
-                    var html = `<a href="{{url('master-items/view/')}}/` + kode + `" class="btn btn-primary">View</a>`
+                    // var fotoUrl = item.image ? `{{ asset('uploads/items') }}/${item.image}` : `{{ asset('images/no-image.png') }}`;
+                    // var htmlFoto = `<img src="${fotoUrl}" style="width: 50px; height: auto;" class="img-thumbnail">`;
+                    // var htmlAction = `<a href="{{url('master-items/view/')}}/` + kode + `" class="btn btn-primary">View</a>`;
 
-                    $.each(item, function(obj_name, obj_value) {
-                        if (obj_name == 'laba') return false;
-                        array_temp.push(obj_value)
-                    })
-                    array_temp.push(harga_jual)
-                    array_temp.push(item.supplier)
-                    array_temp.push(html)
+                    // var html = `<a href="{{url('master-items/view/')}}/` + kode + `" class="btn btn-primary">View</a>`
 
+                    // $.each(item, function(obj_name, obj_value) {
+                    //     if (obj_name == 'laba') return false;
+                    //     array_temp.push(obj_value)
+                    // })
+                    
+                    // array_temp.push(harga_jual)
+                    // array_temp.push(item.supplier)
+                    // array_temp.push(html)
+
+                    var array_temp = [];
+    
+                    // Hitung Harga Jual
+                    var harga_jual = Math.round(item.harga_beli + (item.harga_beli * item.laba / 100));
+
+                    // --- BAGIAN TAMPILIN GAMBAR ---
+                    // Cek apakah ada nama file di database. Jika ada, arahkan ke folder uploads.
+                    var fotoUrl = item.image 
+                        ? `{{ asset('uploads/items') }}/${item.image}` 
+                        : `{{ asset('images/no-image.png') }}`;
+                    
+                    // Buat tag <img> agar yang muncul adalah gambarnya, bukan teksnya
+                    var htmlFoto = `<img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover;" class="img-thumbnail" onerror="this.src='{{ asset('uploads/items/no-image.png') }}'">`;
+                    // ------------------------------
+
+                    var htmlAction = `<a href="{{url('master-items/view/')}}/${item.kode}" class="btn btn-primary">View</a>`;
+
+                    // MASUKKAN KE ARRAY SESUAI URUTAN <th> (Kode, Nama, Gambar, Jenis, dst)
+                    array_temp.push(item.kode);       // Kolom 0: Kode
+                    array_temp.push(item.nama);       // Kolom 1: Nama
+                    array_temp.push(htmlFoto);        // Kolom 2: Gambar (Ini yang bikin gambar muncul)
+                    array_temp.push(item.jenis);      // Kolom 3: Jenis
+                    array_temp.push(item.harga_beli); // Kolom 4: Harga Beli
+                    array_temp.push(harga_jual);      // Kolom 5: Harga Jual
+                    array_temp.push(item.supplier);   // Kolom 6: Supplier
+                    array_temp.push(htmlAction);      // Kolom 7: View
 
                     dataTableObj.row.add(array_temp).draw(true);
                 });

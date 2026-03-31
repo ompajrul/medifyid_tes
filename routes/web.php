@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -31,3 +32,27 @@ Route::get('/master-items/delete/{id}', [App\Http\Controllers\MasterItemsControl
 
 
 Route::get('/master-items/update-random-data', [App\Http\Controllers\MasterItemsController::class, 'updateRandomData']);
+
+
+use App\Http\Controllers\CategoryController;
+
+// Grouping agar lebih rapi
+Route::prefix('categories')->group(function () {
+    // Halaman utama daftar kategori
+    Route::get('/', [CategoryController::class, 'index']);
+
+    // Endpoint AJAX untuk pencarian/data table
+    Route::get('/search', [CategoryController::class, 'search']);
+
+    // Menampilkan form (method 'new' atau 'edit')
+    Route::get('/form/{method}/{id?}', [CategoryController::class, 'formView']);
+
+    // Proses simpan data (Tambah/Update)
+    Route::post('/submit/{method}/{id?}', [CategoryController::class, 'formSubmit']);
+
+    // Halaman View Single (Poin 3: Detail & List Items)
+    Route::get('/view/{id}', [CategoryController::class, 'singleView']);
+
+    // Proses Hapus
+    Route::get('/delete/{id}', [CategoryController::class, 'delete']);
+});
