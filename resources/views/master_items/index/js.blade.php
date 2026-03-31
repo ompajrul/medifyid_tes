@@ -69,7 +69,14 @@
                     // array_temp.push(html)
 
                     var array_temp = [];
-    
+                    var labelKategori = "";
+                        if (item.categories && item.categories.length > 0) {
+                            labelKategori = item.categories.map(function(c) {
+                                return `<span class="badge bg-secondary">${c.nama}</span>`;
+                            }).join(' ');
+                        } else {
+                            labelKategori = "-";
+                        }
                     // Hitung Harga Jual
                     var harga_jual = Math.round(item.harga_beli + (item.harga_beli * item.laba / 100));
 
@@ -88,7 +95,8 @@
                     // MASUKKAN KE ARRAY SESUAI URUTAN <th> (Kode, Nama, Gambar, Jenis, dst)
                     array_temp.push(item.kode);       // Kolom 0: Kode
                     array_temp.push(item.nama);       // Kolom 1: Nama
-                    array_temp.push(htmlFoto);        // Kolom 2: Gambar (Ini yang bikin gambar muncul)
+                    array_temp.push(htmlFoto); 
+                    array_temp.push(labelKategori);       // Kolom 2: Gambar (Ini yang bikin gambar muncul)
                     array_temp.push(item.jenis);      // Kolom 3: Jenis
                     array_temp.push(item.harga_beli); // Kolom 4: Harga Beli
                     array_temp.push(harga_jual);      // Kolom 5: Harga Jual
